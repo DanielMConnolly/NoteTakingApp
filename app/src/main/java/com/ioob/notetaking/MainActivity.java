@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity{
     ListView noteList;
     NoteAdapter adapter;
     SQLiteDatabase db;
-    private GestureDetectorCompat gestureDetector;
+    private GestureDetector gestureDetector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +43,15 @@ public class MainActivity extends AppCompatActivity{
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         loadNotesFromDatabase();
-        noteList.setVisibility(View.GONE);
+
+        gestureDetector = new GestureDetector(MainActivity.this, mGestureListener);
 
         noteList.setOnTouchListener(new View.OnTouchListener(){
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                    {
-                        refreshList();
-                        Toast.makeText(MainActivity.this, "NOTES REFRESHED", Toast.LENGTH_LONG).show();
-                    }
 
-                }
-                return false;
+                return gestureDetector.onTouchEvent(event);
             }
         });
 
@@ -140,6 +135,25 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
     }
+
+    private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
+
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (e1.getY()<e2.getY()){
+                   refreshList();
+                    Toast.makeText(MainActivity.this, "NOTES REFRESHED", Toast.LENGTH_SHORT).show();
+
+                }
+
+            } catch (Exception e) {
+
+            }
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+    };
 
     public boolean userHasPermission() {
         return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
