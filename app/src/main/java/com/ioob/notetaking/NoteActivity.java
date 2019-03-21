@@ -31,10 +31,10 @@ public class NoteActivity extends AppCompatActivity  {
 
     String imagePath = "";
     Button saveNote;
+    Button deleteNote;
     TextView noteTitle;
     ImageView noteImage;
     TextView noteDescription;
-
     SQLiteDatabase db;
 
     boolean isUpdate = false;
@@ -50,6 +50,7 @@ public class NoteActivity extends AppCompatActivity  {
         db = handler.getReadableDatabase();
 
         saveNote = (Button) findViewById(R.id.create_note);
+        deleteNote = (Button) findViewById(R.id.delete_note);
         noteTitle = (TextView) findViewById(R.id.note_title);
         noteImage = (ImageView) findViewById(R.id.note_image);
         noteDescription = (TextView) findViewById(R.id.note_description);
@@ -60,7 +61,9 @@ public class NoteActivity extends AppCompatActivity  {
             noteId = (int) extras.getLong("noteId");
             setNote(noteId);
             saveNote.setText("Update Note");
+            deleteNote.setText("Delete");
         }
+
 
         noteImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +92,23 @@ public class NoteActivity extends AppCompatActivity  {
 
             }
         });
+
+        deleteNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteNote(noteId);
+                finish();
+            }
+        });
+
+    }
+    private void deleteNote(int noteId) {
+        // Create a new instance of the NoteTakingDatabase
+        NoteTakingDatabase handler = new NoteTakingDatabase(getApplicationContext());
+        // Get the writable database
+        SQLiteDatabase db = handler.getWritableDatabase();
+        // Store the note in the database
+        handler.deleteNote(db, noteId);
     }
 
     private void updateNote(int noteId, String imagePath, String title, String description, String category) {

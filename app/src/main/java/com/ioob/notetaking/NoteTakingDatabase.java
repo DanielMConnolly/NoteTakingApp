@@ -42,7 +42,9 @@ public class NoteTakingDatabase extends SQLiteOpenHelper {
     }
 
     void deleteNote(SQLiteDatabase db, Integer id) {
-        this.getWritableDatabase().delete(DATABASE_NAME, "_id=?", new String[]{String.valueOf(id)});
+        SQLiteDatabase retVal = this.getWritableDatabase();
+        retVal.delete(DATABASE_NAME, "_id=?", new String[]{String.valueOf(id)});
+
     }
 
 
