@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,11 +39,14 @@ public class MainActivity extends AppCompatActivity{
         noteList = (ListView) findViewById(R.id.note_list);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.planets_array, R.layout.sort_spinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+
         loadNotesFromDatabase();
+        spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener(adapter));
 
         gestureDetector = new GestureDetector(MainActivity.this, mGestureListener);
 
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity{
         todoCursor = db.rawQuery("SELECT * FROM notes", null);
 
         // Create an instance of the NoteAdapter with our cursor
-        adapter = new NoteAdapter(this, todoCursor, 0);
+         adapter = new NoteAdapter(this, todoCursor, 0);
 
         // Set the NoteAdapter to the ListView (display all notes from DB)
         noteList.setAdapter(adapter);
@@ -135,6 +139,43 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
     }
+    private class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener{
+        NoteAdapter adapter;
+        Boolean isloaded = false;
+        public CustomOnItemSelectedListener(NoteAdapter adapter){
+            this.adapter = adapter;
+        }
+
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (isloaded) {
+                Log.i("SPINNER", parent.getItemAtPosition(position).toString());
+                String value = parent.getItemAtPosition(position).toString();
+                if (value.equals("Sort By Title")) {
+                    todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteText", null);
+                    adapter.changeCursor(todoCursor);
+                    adapter.notifyDataSetChanged();
+
+                }
+                else{
+                    todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteText DESC", null);
+                    adapter.changeCursor(todoCursor);
+                    adapter.notifyDataSetChanged();
+
+                }
+
+            }
+            else{
+                isloaded=true;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
 
     private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
@@ -155,7 +196,11 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+
+
     public boolean userHasPermission() {
         return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
+
+
 }
