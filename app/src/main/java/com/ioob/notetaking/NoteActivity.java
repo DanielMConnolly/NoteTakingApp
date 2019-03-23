@@ -14,8 +14,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class NoteActivity extends AppCompatActivity  {
     ImageView noteImage;
     TextView noteDescription;
     SQLiteDatabase db;
+    Spinner category;
 
     boolean isUpdate = false;
     int noteId;
@@ -56,6 +59,10 @@ public class NoteActivity extends AppCompatActivity  {
         noteTitle = (TextView) findViewById(R.id.note_title);
         noteImage = (ImageView) findViewById(R.id.note_image);
         noteDescription = (TextView) findViewById(R.id.note_description);
+        final ArrayAdapter<CharSequence> sadapter = ArrayAdapter.createFromResource(this, R.array.user_inserted_categories, R.layout.sort_spinner);
+        category = (Spinner) findViewById(R.id.categories);
+        sadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(sadapter);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -96,10 +103,10 @@ public class NoteActivity extends AppCompatActivity  {
                     if (!isUpdate) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String date = sdf.format(new Date());
-                        storeNote(imagePath, noteTitle.getText().toString(), "Description", "Category", date);
+                        storeNote(imagePath, noteTitle.getText().toString(), "Description", category.getSelectedItem().toString(), date);
 
                     } else {
-                        updateNote(noteId, imagePath, noteTitle.getText().toString(), description, "Category");
+                        updateNote(noteId, imagePath, noteTitle.getText().toString(), description, category.getSelectedItem().toString());
                     }
 
                     finish();
@@ -169,6 +176,7 @@ public class NoteActivity extends AppCompatActivity  {
         noteDescription.setText(description);
 
         String noteCategory = cursor.getString(cursor.getColumnIndexOrThrow("noteCategory"));
+
 
         cursor.close();
     }
