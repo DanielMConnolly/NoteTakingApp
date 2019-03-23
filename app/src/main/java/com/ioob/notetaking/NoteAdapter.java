@@ -38,6 +38,8 @@ public class NoteAdapter extends CursorAdapter {
 
         String category = cursor.getString(cursor.getColumnIndexOrThrow("noteCategory"));
 
+
+
         // Populate fields with properties from database
         noteImage.setImageBitmap(bitmap);
         noteText.setText(title);

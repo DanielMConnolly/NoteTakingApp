@@ -19,14 +19,15 @@ public class NoteTakingDatabase extends SQLiteOpenHelper {
     // This is called when database is created.
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE notes(_id INTEGER PRIMARY KEY, noteImage TEXT, noteText TEXT, noteDescription TEXT, noteCategory TEXT)");
+        db.execSQL("CREATE TABLE notes(_id INTEGER PRIMARY KEY, noteImage TEXT, noteText TEXT, noteDescription TEXT, noteCategory TEXT, noteDate TEXT)");
     }
-    void storeNote(SQLiteDatabase db, String path, String text, String description, String category) {
+    void storeNote(SQLiteDatabase db, String path, String text, String description, String category, String date) {
         ContentValues values = new ContentValues();
         values.put("noteImage", path);
         values.put("noteText", text);
         values.put("noteDescription", description);
         values.put("noteCategory", category);
+        values.put("noteDate", date);
 
         db.insert(DATABASE_NAME, null, values);
     }
