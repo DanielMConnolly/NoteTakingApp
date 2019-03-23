@@ -193,6 +193,12 @@ public class MainActivity extends AppCompatActivity{
                 else if (value.equals("Sort By Newest")){
                     todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY datetime(noteDate) DESC", null);
                 }
+                else if (value.equals("Sort By Category")){
+                    Log.i("ISLOADED", "CATEGORIES");
+                    todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteCategory ", null);
+                }
+
+
                 else{
                     todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteText DESC", null);
                 }
