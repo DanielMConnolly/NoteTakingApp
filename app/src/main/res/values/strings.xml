@@ -7,4 +7,9 @@
             <item>Sort By Newest</item>
 
         </string-array>
+    <string-array name="user_inserted_categories">
+        <item>Home</item>
+        <item>Work</item>
+        <item>School</item>
+    </string-array>
 </resources>

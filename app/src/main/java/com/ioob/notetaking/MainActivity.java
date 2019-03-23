@@ -22,11 +22,17 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity{
     Cursor todoCursor;
@@ -34,6 +40,9 @@ public class MainActivity extends AppCompatActivity{
     TextView emptyText;
     NoteAdapter adapter;
     SQLiteDatabase db;
+
+    EditText text;
+    ArrayList<String> lists;
     private GestureDetector gestureDetector;
 
 
@@ -44,7 +53,6 @@ public class MainActivity extends AppCompatActivity{
         noteList = (ListView) findViewById(R.id.note_list);
         emptyText = (TextView) findViewById(R.id.empty);
         noteList.setEmptyView(emptyText);
-
 
         View mainView = findViewById(R.id.mainConstraintLayout);
 

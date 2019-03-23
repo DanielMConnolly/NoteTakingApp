@@ -28,12 +28,14 @@
 
     <ImageView
         android:id="@+id/note_image"
-        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="H,1:1"
+        android:layout_margin="20dp"
+        android:layout_marginTop="52dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/note_description" />
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintTop_toBottomOf="@+id/note_description"
+        tools:layout_editor_absoluteX="20dp" />
 
     <Button
         android:id="@+id/delete_note"
@@ -56,4 +58,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/categories"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="534dp" />
+
 </android.support.constraint.ConstraintLayout>
