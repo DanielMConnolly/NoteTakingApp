@@ -85,15 +85,16 @@ public class NoteActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 boolean formIsBlank = noteTitle.getText().toString().trim().isEmpty();
+                String description = noteDescription.getText().toString().trim();
                 if(formIsBlank){
                     noteTitle.setError("Note Title Cannot be blank");
                 }
                 else{
                     //No errors in the form
                     if (!isUpdate) {
-                        storeNote(imagePath, noteTitle.getText().toString(), "Description", "Category");
+                        storeNote(imagePath, noteTitle.getText().toString(), description, "Category");
                     } else {
-                        updateNote(noteId, imagePath, noteTitle.getText().toString(), "Description", "Category");
+                        updateNote(noteId, imagePath, noteTitle.getText().toString(), description, "Category");
                     }
                     finish();
                 }
@@ -128,6 +129,8 @@ public class NoteActivity extends AppCompatActivity  {
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
         handler.updateNote(db, noteId, imagePath, title, description, category);
+
+        Toast.makeText(this,"note has been updated",Toast.LENGTH_LONG).show();
     }
 
     //Checks whether the note exist in the database
@@ -171,6 +174,8 @@ public class NoteActivity extends AppCompatActivity  {
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
         handler.storeNote(db, path, title, description, category);
+
+        Toast.makeText(this, "Note has been created!", Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
