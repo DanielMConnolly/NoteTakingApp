@@ -22,6 +22,8 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -92,10 +94,14 @@ public class NoteActivity extends AppCompatActivity  {
                 else{
                     //No errors in the form
                     if (!isUpdate) {
-                        storeNote(imagePath, noteTitle.getText().toString(), description, "Category");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String date = sdf.format(new Date());
+                        storeNote(imagePath, noteTitle.getText().toString(), "Description", "Category", date);
+
                     } else {
                         updateNote(noteId, imagePath, noteTitle.getText().toString(), description, "Category");
                     }
+
                     finish();
                 }
 
@@ -167,15 +173,17 @@ public class NoteActivity extends AppCompatActivity  {
         cursor.close();
     }
 
-    public void storeNote(String path, String title, String description, String category) {
+    public void storeNote(String path, String title, String description, String category, String date) {
         // Create a new instance of the NoteTakingDatabase
         NoteTakingDatabase handler = new NoteTakingDatabase(getApplicationContext());
         // Get the writable database
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
-        handler.storeNote(db, path, title, description, category);
+
+        handler.storeNote(db, path, title, description, category, date);
 
         Toast.makeText(this, "Note has been created!", Toast.LENGTH_LONG).show();
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

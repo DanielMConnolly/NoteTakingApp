@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity{
         noteList.setEmptyView(emptyText);
 
 
+        View mainView = findViewById(R.id.mainConstraintLayout);
+
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.sort_spinner);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -56,6 +59,14 @@ public class MainActivity extends AppCompatActivity{
 
         gestureDetector = new GestureDetector(MainActivity.this, mGestureListener);
 
+        mainView.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
         noteList.setOnTouchListener(new View.OnTouchListener(){
 
             @Override
@@ -64,6 +75,8 @@ public class MainActivity extends AppCompatActivity{
                 return gestureDetector.onTouchEvent(event);
             }
         });
+
+        mainView.setClickable(true);
 
 
 
@@ -90,6 +103,7 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(openNote);
             }
         });
+
     }
 
     public void refreshList(){
@@ -157,21 +171,26 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Log.i("ISLOADED", String.valueOf(isloaded));
             if (isloaded) {
-                Log.i("SPINNER", parent.getItemAtPosition(position).toString());
                 String value = parent.getItemAtPosition(position).toString();
                 if (value.equals("Sort By Title")) {
                     todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteText", null);
-                    adapter.changeCursor(todoCursor);
-                    adapter.notifyDataSetChanged();
 
+                }
+                else if(value.equals("Sort By Oldest")){
+                    todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY datetime(noteDate)", null);
+
+                }
+                else if (value.equals("Sort By Newest")){
+                    todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY datetime(noteDate) DESC", null);
                 }
                 else{
                     todoCursor = db.rawQuery("SELECT * FROM notes ORDER BY noteText DESC", null);
-                    adapter.changeCursor(todoCursor);
-                    adapter.notifyDataSetChanged();
-
                 }
+                Log.i("ISLOADED", value);
+                adapter.changeCursor(todoCursor);
+                adapter.notifyDataSetChanged();
 
             }
             else{

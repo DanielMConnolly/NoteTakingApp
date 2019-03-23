@@ -3,7 +3,8 @@
 
         <string-array name="planets_array">
             <item>Sort By Title</item>
-            <item>Sort By Date</item>
+            <item>Sort By Oldest</item>
+            <item>Sort By Newest</item>
 
         </string-array>
 </resources>
