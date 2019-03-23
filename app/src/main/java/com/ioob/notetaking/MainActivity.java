@@ -22,13 +22,16 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity{
     Cursor todoCursor;
     ListView noteList;
+    TextView emptyText;
     NoteAdapter adapter;
     SQLiteDatabase db;
     private GestureDetector gestureDetector;
@@ -39,12 +42,14 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         noteList = (ListView) findViewById(R.id.note_list);
+        emptyText = (TextView) findViewById(R.id.empty);
+        noteList.setEmptyView(emptyText);
+
 
         View mainView = findViewById(R.id.mainConstraintLayout);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, R.layout.sort_spinner);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, R.layout.sort_spinner);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
 
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity{
 
         // Set the NoteAdapter to the ListView (display all notes from DB)
         noteList.setAdapter(adapter);
+
         noteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
