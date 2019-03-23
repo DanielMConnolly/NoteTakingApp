@@ -59,9 +59,17 @@ public class NoteActivity extends AppCompatActivity  {
         if (extras != null) {
             isUpdate = true;
             noteId = (int) extras.getLong("noteId");
-            setNote(noteId);
-            saveNote.setText("Update Note");
-            deleteNote.setText("Delete");
+            boolean noteExist = noteExist(noteId);
+            if(noteExist){
+                setNote(noteId);
+                saveNote.setText("Update Note");
+                deleteNote.setText("Delete");
+            }
+            else{
+                Toast.makeText(this,"Note may have been deleted.\nRefresh the page",Toast.LENGTH_LONG).show();
+                finish();
+            }
+
         }
 
 
@@ -77,15 +85,16 @@ public class NoteActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 boolean formIsBlank = noteTitle.getText().toString().trim().isEmpty();
+                String description = noteDescription.getText().toString().trim();
                 if(formIsBlank){
                     noteTitle.setError("Note Title Cannot be blank");
                 }
                 else{
                     //No errors in the form
                     if (!isUpdate) {
-                        storeNote(imagePath, noteTitle.getText().toString(), "Description", "Category");
+                        storeNote(imagePath, noteTitle.getText().toString(), description, "Category");
                     } else {
-                        updateNote(noteId, imagePath, noteTitle.getText().toString(), "Description", "Category");
+                        updateNote(noteId, imagePath, noteTitle.getText().toString(), description, "Category");
                     }
                     finish();
                 }
@@ -109,6 +118,8 @@ public class NoteActivity extends AppCompatActivity  {
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
         handler.deleteNote(db, noteId);
+
+        Toast.makeText(this,"NOTE DELETED",Toast.LENGTH_SHORT).show();
     }
 
     private void updateNote(int noteId, String imagePath, String title, String description, String category) {
@@ -118,6 +129,20 @@ public class NoteActivity extends AppCompatActivity  {
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
         handler.updateNote(db, noteId, imagePath, title, description, category);
+
+        Toast.makeText(this,"note has been updated",Toast.LENGTH_LONG).show();
+    }
+
+    //Checks whether the note exist in the database
+    private boolean noteExist(int noteId){
+        Cursor cursor = db.rawQuery("SELECT * FROM notes WHERE _id = " + noteId, null);
+
+        if(cursor.moveToFirst()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     private void setNote(Integer noteId) {
@@ -149,6 +174,8 @@ public class NoteActivity extends AppCompatActivity  {
         SQLiteDatabase db = handler.getWritableDatabase();
         // Store the note in the database
         handler.storeNote(db, path, title, description, category);
+
+        Toast.makeText(this, "Note has been created!", Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
